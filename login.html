@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login — Ranking Buses Eléctricos</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e14;
+    --surface: #111820;
+    --border: #1e2a38;
+    --accent: #00e5a0;
+    --accent2: #0090ff;
+    --danger: #ff5c7a;
+    --text: #e8edf3;
+    --muted: #5a6a7e;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .card {
+    width: 100%;
+    max-width: 420px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 36px 32px;
+  }
+  .eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 38px;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    margin-bottom: 8px;
+  }
+  .subtitle {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 300;
+    margin-bottom: 28px;
+  }
+  .tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 4px;
+    border-radius: 10px;
+    margin-bottom: 24px;
+  }
+  .tab {
+    flex: 1;
+    padding: 10px;
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 7px;
+    transition: all 0.15s;
+  }
+  .tab.active {
+    background: var(--surface);
+    color: var(--accent);
+  }
+  label {
+    display: block;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+    margin-top: 18px;
+  }
+  input {
+    width: 100%;
+    padding: 12px 14px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    transition: border 0.15s;
+  }
+  input:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  button.submit {
+    width: 100%;
+    margin-top: 24px;
+    padding: 13px;
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    border-radius: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  button.submit:hover { opacity: 0.85; }
+  button.submit:disabled { opacity: 0.5; cursor: not-allowed; }
+  .message {
+    margin-top: 16px;
+    padding: 10px 12px;
+    font-size: 12px;
+    font-family: 'DM Mono', monospace;
+    border-radius: 6px;
+    display: none;
+  }
+  .message.ok { background: rgba(0,229,160,0.10); color: var(--accent); border: 1px solid rgba(0,229,160,0.25); display: block; }
+  .message.err { background: rgba(255,92,122,0.10); color: var(--danger); border: 1px solid rgba(255,92,122,0.25); display: block; }
+  .footer-link {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .footer-link a {
+    color: var(--accent2);
+    text-decoration: none;
+  }
+  .user-panel { display: none; }
+  .user-panel.visible { display: block; }
+  .user-info {
+    padding: 14px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 18px;
+    word-break: break-all;
+  }
+  .user-info strong { color: var(--text); }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="eyebrow">Acceso · Ranking 2026</div>
+  <h1>Iniciar Sesión</h1>
+  <p class="subtitle">Accede a tu cuenta o regístrate para continuar.</p>
+
+  <div id="authView">
+    <div class="tabs">
+      <button class="tab active" data-mode="signin">Entrar</button>
+      <button class="tab" data-mode="signup">Crear cuenta</button>
+    </div>
+
+    <form id="authForm">
+      <div id="nameRow" style="display:none">
+        <label for="fullName">Nombre completo</label>
+        <input id="fullName" type="text" autocomplete="name" placeholder="Juan Pérez">
+      </div>
+      <label for="email">Email</label>
+      <input id="email" type="email" autocomplete="email" required placeholder="tu@email.com">
+      <label for="password">Contraseña</label>
+      <input id="password" type="password" autocomplete="current-password" required minlength="6" placeholder="Mínimo 6 caracteres">
+      <button type="submit" class="submit" id="submitBtn">Entrar</button>
+      <div class="message" id="message"></div>
+    </form>
+
+    <div class="footer-link">
+      <a href="/">← Ver ranking público</a>
+    </div>
+  </div>
+
+  <div class="user-panel" id="userView">
+    <div class="user-info">
+      Sesión activa como<br>
+      <strong id="userEmail"></strong>
+    </div>
+    <a href="/" class="submit" style="display:block;text-align:center;text-decoration:none;background:var(--accent2);color:#fff">Ir al ranking</a>
+    <button class="submit" id="logoutBtn" style="background:transparent;color:var(--danger);border:1px solid var(--danger);margin-top:10px">Cerrar sesión</button>
+  </div>
+</div>
+
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+  const SUPABASE_URL = 'https://dtyaybtddusmnpscfhaa.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_fD97RhSLp-C-bMh5J2MLCw_fBLVmuhi';
+  const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  const authView = document.getElementById('authView');
+  const userView = document.getElementById('userView');
+  const userEmail = document.getElementById('userEmail');
+  const tabs = document.querySelectorAll('.tab');
+  const form = document.getElementById('authForm');
+  const submitBtn = document.getElementById('submitBtn');
+  const message = document.getElementById('message');
+  const nameRow = document.getElementById('nameRow');
+  let mode = 'signin';
+
+  function showMessage(text, kind) {
+    message.textContent = text;
+    message.className = 'message ' + kind;
+  }
+
+  function renderSession(session) {
+    if (session?.user) {
+      authView.style.display = 'none';
+      userView.classList.add('visible');
+      userEmail.textContent = session.user.email;
+    } else {
+      authView.style.display = 'block';
+      userView.classList.remove('visible');
+    }
+  }
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      mode = tab.dataset.mode;
+      submitBtn.textContent = mode === 'signin' ? 'Entrar' : 'Crear cuenta';
+      nameRow.style.display = mode === 'signup' ? 'block' : 'none';
+      message.className = 'message';
+      document.getElementById('password').autocomplete = mode === 'signin' ? 'current-password' : 'new-password';
+    });
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    submitBtn.disabled = true;
+    message.className = 'message';
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const fullName = document.getElementById('fullName').value.trim();
+
+    try {
+      if (mode === 'signin') {
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        showMessage('✓ Sesión iniciada', 'ok');
+      } else {
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: { data: { full_name: fullName } }
+        });
+        if (error) throw error;
+        if (data.user && !data.session) {
+          showMessage('✓ Cuenta creada. Revisa tu email para confirmar.', 'ok');
+        } else {
+          showMessage('✓ Cuenta creada y sesión iniciada', 'ok');
+        }
+      }
+    } catch (err) {
+      showMessage('✗ ' + (err.message || 'Error inesperado'), 'err');
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
+    await supabase.auth.signOut();
+  });
+
+  const { data: { session } } = await supabase.auth.getSession();
+  renderSession(session);
+  supabase.auth.onAuthStateChange((_event, session) => renderSession(session));
+</script>
+</body>
+</html>
